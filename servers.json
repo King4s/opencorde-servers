@@ -1,0 +1,12 @@
+[
+  {
+    "hostname": "opencorde.com",
+    "pubkey": "b479ee58ddc4a20f88f15c56c2202ad495cd6901e5206ac325900243be707d6a",
+    "name": "OpenCorde Official",
+    "description": "The official OpenCorde server",
+    "region": "EU",
+    "language": "en",
+    "open_registration": true,
+    "added": "2026-03-26"
+  }
+]

@@ -1,0 +1,40 @@
+name: Validate server registry
+
+on:
+  pull_request:
+    paths:
+      - servers.json
+  push:
+    branches:
+      - main
+    paths:
+      - servers.json
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate JSON syntax
+        run: python3 -c "import json; json.load(open('servers.json'))" && echo "JSON syntax OK"
+
+      - name: Validate entries (DNS + endpoint + pubkey)
+        run: python3 validate.py
+
+      - name: Check for new entries (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin main
+          ADDED=$(git diff origin/main -- servers.json | grep '^+' | grep '"hostname"' | sed 's/.*"hostname": "\(.*\)".*/\1/')
+          if [ -z "$ADDED" ]; then
+            echo "No new servers added"
+          else
+            echo "New servers in this PR:"
+            echo "$ADDED"
+          fi
